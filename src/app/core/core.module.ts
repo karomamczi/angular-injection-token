@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
+import { InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-
+export const APP_STORAGE = new InjectionToken('application storage');
 
 @NgModule({
   declarations: [],
@@ -9,4 +9,17 @@ import { CommonModule } from '@angular/common';
     CommonModule
   ]
 })
-export class CoreModule { }
+export class CoreModule {
+  static forRoot({storage}: {storage: Storage}): ModuleWithProviders {
+
+    return {
+      ngModule: CoreModule,
+      providers: [
+        {
+          provide: APP_STORAGE,
+          useValue: storage
+        },
+      ]
+    }
+  }
+}

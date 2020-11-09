@@ -1,24 +1,37 @@
+import { MyStorageServiceStub } from './core/my-storage.service.stub';
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { MyStorageService } from './core/my-storage.service';
 
 describe('AppComponent', () => {
+  let myStorageService: MyStorageServiceStub;
+  let component: AppComponent;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent
       ],
+      providers: [
+        {
+          provide: MyStorageService,
+          useClass: MyStorageServiceStub
+        },
+      ]
     }).compileComponents();
   }));
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
+
     expect(app).toBeTruthy();
   });
 
   it(`should have as title 'injection'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
+
     expect(app.title).toEqual('injection');
   });
 
@@ -26,6 +39,22 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
+
     expect(compiled.querySelector('.content span').textContent).toContain('injection app is running!');
+  });
+
+  describe('ngOnInit', () => {
+    beforeEach(() => {
+      const fixture = TestBed.createComponent(AppComponent);
+      component = fixture.componentInstance;
+      myStorageService = TestBed.inject(MyStorageService);
+      spyOn(myStorageService, 'saveQuote');
+    });
+
+    it('should save quote', () => {
+      component.ngOnInit();
+      
+      expect(myStorageService.saveQuote).toHaveBeenCalledTimes(1);
+    })
   });
 });
